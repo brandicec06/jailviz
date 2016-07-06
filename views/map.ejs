@@ -13,16 +13,21 @@
     <script src="https://d3js.org/topojson.v1.min.js"></script>
 
     <style>
-
+      html, body {
+        overflow-y:hidden;
+        margin: 0;
+        padding: 0;
+      }
 
       svg {
-        border: solid 1px #ccc;
-        background: #eee;
+        border: solid .25px #ccc;
+        background: #000000;
       }
 
       path {
         fill: none;
-        stroke: steelblue;
+        stroke: white;
+        stroke-opacity: .3;
       }
 
 
@@ -31,13 +36,13 @@
 </head>
 
 <body>
-  <% include template/header.ejs %>
+  <!--<% include template/header.ejs %>
   <h1><a href="/index"><%= title %></a></h1>
   <p>Welcome to <%= title %></p>
   <input id ="b" name="updateButton"
           type="button"
           value="Update"/>
-  <div id="layout"></div>
+  <div id="layout"></div>-->
   <script src="javascripts/maps.js"></script>
 </body>
 </html>
