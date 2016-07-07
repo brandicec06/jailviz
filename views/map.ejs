@@ -37,6 +37,23 @@
 
       }
 
+      #map{
+        background: black;
+
+      }
+
+      .button{
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        padding: 3px 3px;
+      }
+      .buttonl{
+        position: absolute;
+        top: 40px;
+        left: 20px;
+        padding: 3px 3px;
+      }
 
 </style>
 
@@ -45,11 +62,39 @@
 <body>
   <!--<% include template/header.ejs %>
   <h1><a href="/index"><%= title %></a></h1>
-  <p>Welcome to <%= title %></p>
-  <input id ="b" name="updateButton"
+  <p>Welcome to <%= title %></p>-->
+
+
+  <div id="map"></div>
+  <button class="button" name="updateButton"
           type="button"
-          value="Update"/>
-  <div id="layout"></div>-->
+          value="CONFPOP"
+          onclick="myFunc()">Population</button>
+    <button class="buttonl" name="b2"
+          type="button"
+          value="NONCITZ"
+          onclick="myFunc()">Non Population</button>
+
   <script src="javascripts/maps.js"></script>
+  <script type="text/javascript">
+      function myFunc(){
+        var n;
+        var $btn = $(document.activeElement);
+        if($btn.length){
+          n = $btn[0].value;
+        }
+        updateData(n);
+      }
+
+  </script>
+  <script type="text/javascript">
+  //add buttons with jquery
+       /* var r=$('<input/>').attr({
+        type: "button",
+        id: "field",
+        value: 'new'
+    });
+    $("body").append(r);*/
+  </script>
 </body>
 </html>

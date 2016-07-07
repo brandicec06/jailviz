@@ -1,9 +1,18 @@
   var height, path, projection, states, svg, width, pl;
 
-  states = d3.select('body').append('svg').append("svg").attr("id", "states")
+  var coord = [];
+  var extentsx;
+  var extentsy;
+  var r = 3;
+
+  var name = "CONFPOP";
+
+  states = d3.select('#map').append('svg').append("svg").attr("id", "states")
       .style("stroke","white")
       .style("stroke-width", ".5")
-      .style("stroke-opacity", "0.4");;
+      .style("stroke-opacity", "0.4");
+
+
 
   width = parseInt(window.innerWidth);
   height = parseInt(window.innerHeight);
@@ -20,7 +29,8 @@
     .scale(1400)
     .translate([width / 3, height / 2]);
 
-
+  extentsx = projection.invert([0,0]);
+  extentsy = projection.invert([width,height]);
 
   //console.log(projection.scale());
 
@@ -29,14 +39,6 @@
 
   //console.log(projection.invert([0,0]));
   // console.log(projection.invert([width,height]));
-
-  var coord = [];
-  var ncoord = [];
-  var extentsx = projection.invert([0,0]);
-  var extentsy = projection.invert([width,height]);
-  var r = 3;
-
-
 
   d3.json("./source/nstates.json", function(collection) { 
 
@@ -49,31 +51,12 @@
      
     }  
 
-    for (i in coord){
-      ncoord.push(projection([coord[i].x,coord[i].y]));
-      //console.log(projection(coord[i]));
-    }
-
-    //console.log(ncoord[0][0]);
-
     states.selectAll("path").data(collection.features).enter().append("svg:path")
       .attr("d", path)
       .append("svg:title")
       .text(function(d) {
         return d.properties.name;
     });
-
-
-      /*var circles = svg.selectAll("circle").data(ncoord);
-        // Enter
-          circles.enter().append("circle")
-          .attr("r", 10).attr("cx", function (d,i){ return 500 })
-          .attr("cx", function (d){ 
-            return d[0]; 
-          })
-          .attr("cy", function (d){ return d[1]; })
-          .style("fill","blue");
-          */
 
   });
 
@@ -83,9 +66,10 @@
     } 
   }
 
-
   d3.csv("./source/survey.csv", function(error,data){
       if(error) throw error;
+
+
 
       for( p in data){
         var jx = data[p].LON;
@@ -95,7 +79,10 @@
         
       }
 
+
   coordScale(jails);
+
+
   //console.log(extentsx);
   //console.log(njails);
 
@@ -124,11 +111,9 @@
   var pr;
   var circles = svg.selectAll("circle").data(data);
         var c;
-
+        console.log(name);
         circles.enter().append("circle")
-          .attr("r", function(d,i){
-            return rScale(data[i].CONFPOP);
-          })
+          .attr("r", 0)
           .attr("cx", function (d,i){ 
 
             points = projection([data[i].LON,data[i].LAT]);
@@ -143,9 +128,9 @@
             return points[1];
           })
           .style("fill", function(d,i){
-            //console.log(d.CONFPOP)
+            //console.log(d.name)
             
-            var t = d.CONFPOP;
+            var t = d[name];
             var carr = ["#fed9a6","#b3cde3","#ccebc5","#decbe4","#fbb4ae"];
 
             if(t<100){
@@ -163,8 +148,37 @@
           })
           .style('opacity', .5)
           .on("mouseover",over)
-          .on("mouseout",out);
+          .on("mouseout",out)
+          .transition()
+          .duration(2000);
+
+        svg.selectAll("circle").transition().duration(1000)
+          .attr("r", function(d,i){
+            return rScale(data[i][name]);
+          })
+          .attr("cx", function (d,i){ 
+
+            points = projection([data[i].LON,data[i].LAT]);
+            //console.log(points[0]);
+            
+            return points[0];
+          })
+          .attr("cy", function (d,i){ 
+            //console.log(points[0)
+            points = projection([data[i].LON,data[i].LAT]);
+            //console.log(points[1]);
+            return points[1];
+          });
+
+        circles.exit().remove();
+
+    });
+
+  
 
 
-  });
+function updateData(name){
+ // var h = update(name,update);
+  //console.log(h);
+}
 
