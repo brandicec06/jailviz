@@ -5,8 +5,9 @@
   var extentsy;
   var r = 3;
 
-  cLeft = 150;
-  cTop = 50;
+  cLeft = 300;
+  cTop = 75;
+  cBot = 20;
 
   var name = "CONFPOP";
 
@@ -53,7 +54,7 @@
 
   var gridScaleY = d3.scaleLinear()
     .domain([0,10])
-    .range([cTop,height-cTop]);
+    .range([cTop,height-cBot]);
 
 
   function gridPoints(){
@@ -166,6 +167,17 @@ function update(key,chart){
   var pr;
   var circles = svg.selectAll("circle").data(data);
         var c;
+
+          var ppts =[];
+          var Gpoint = [];
+          if(chart == true){
+              states.selectAll("path").transition().duration(1000)
+                .style("stroke-opacity", "0");
+              gridPoints();
+          }else{
+              states.selectAll("path").transition().duration(1000)
+                .style("stroke-opacity", "0.4");
+          }
    
         circles.enter().append("circle")
           .attr("r", 0)
@@ -228,17 +240,37 @@ function update(key,chart){
             return rMap(data[i][key], dRange,key);
           })
           .attr("cx", function (d,i){ 
-
-            points = projection([data[i].LON,data[i].LAT]);
+            var xc;
+            if(chart){
+              if(i <100){
+                points = [gpts[i]["x"],gpts[i]["y"]];
+                xc = points[0]
+              }else{
+                xc = -100;
+              }
+            }else{
+              points = projection([data[i].LON,data[i].LAT]);
+              xc = points[0];
+          }
             //console.log(points[0]);
-            
-            return points[0];
+    
+            return xc;
           })
           .attr("cy", function (d,i){ 
-            //console.log(points[0)
-            points = projection([data[i].LON,data[i].LAT]);
-            //console.log(points[1]);
-            return points[1];
+            if(chart){
+              var yc;
+              if(i <100){
+                points = [gpts[i]["x"],gpts[i]["y"]];
+                yc = points[1]
+                //console.log(points);
+              }else{
+                yc = -100;
+              }
+            }else{
+              points = projection([data[i].LON,data[i].LAT]);
+              yc = points[1]
+            }
+            return yc;
           }).style("fill", function(d,i){
             //console.log(d.name)
             
@@ -258,42 +290,19 @@ function update(key,chart){
             }
             return carr[c];
           })
-          .style("opacity",function(){
+          .style("opacity",function(d,i){
             if(chart ){
+              if(i<100){
+               return .5;
+             }else{
               return 0;
+             }
             }else {
               return .5;
             }
           });
 
-          console.log(chart);
 
-          var ppts =[];
-          var Gpoint = [];
-          if(chart == true){
-              states.selectAll("path").transition().duration(1000)
-                .style("stroke-opacity", "0");
-              ppts = gridPoints();
-
-              /*d3.selct("svg").selectAll("*").remove();
-
-              svg.selectAll("circle").data(gpts)//.transition().duration(1000)
-                .enter().append("circle")
-                .attr("cx", function (d,i){ 
-                  console.log(gpts[i])
-                  Gpoint = gpts[i];
-                  return Gpoint[0];
-                })
-                .attr("cx", function (d,i){ 
-                  Gpoint = gpts[i];
-                  return Gpoint[1];
-                })
-                .style("opacity", .5);*/
-
-          }else{
-              states.selectAll("path").transition().duration(1000)
-                .style("stroke-opacity", "0.4");
-          }
 
         circles.exit().remove();
 
