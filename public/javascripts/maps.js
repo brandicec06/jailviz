@@ -66,10 +66,40 @@
     } 
   }
 
+  function rMap(num,bounds, key){
+
+    if(key == "NCONPOP" || key == "CONFPOP"){
+      var nBound = [0,20000];
+      bounds = nBound;
+      console.log("this is pringing");
+    }
+
+    var dScale = d3.scaleLinear()
+    .domain(bounds)
+    .range([3, 50])
+
+    var sNum = dScale(num);
+
+    return sNum;
+  }
+
+
+  function extents(obj, k){
+    var range = [];
+    var arr = _.pluck(obj,k);
+    arr = arr.map(Number);
+
+
+    range.push(_.min(arr));
+    range.push(_.max(arr));
+    return range;
+    //return range[rMax,rMin];
+  }
+
+
+function update(key){
   d3.csv("./source/survey.csv", function(error,data){
       if(error) throw error;
-
-
 
       for( p in data){
         var jx = data[p].LON;
@@ -79,17 +109,11 @@
         
       }
 
-
   coordScale(jails);
 
 
-  //console.log(extentsx);
-  //console.log(njails);
-
-  var rScale = d3.scaleLinear()
-    .domain([0,20000])
-    .range([3, 50])
-
+  var dRange = extents(data,key);
+  console.log(dRange);
 
   var over = function(){
     var circle = d3.select(this);
@@ -99,7 +123,6 @@
         .attr("r", circle.attr("r") * 1 + 10 );
         //.style("opacity","0.2"); 
   }
-
 
   var out = function(){
     var circle = d3.select(this);
@@ -111,7 +134,7 @@
   var pr;
   var circles = svg.selectAll("circle").data(data);
         var c;
-        console.log(name);
+   
         circles.enter().append("circle")
           .attr("r", 0)
           .attr("cx", function (d,i){ 
@@ -154,7 +177,9 @@
 
         svg.selectAll("circle").transition().duration(1000)
           .attr("r", function(d,i){
-            return rScale(data[i][name]);
+
+              //console.log(rMap(data[i][key], dRange));
+            return rMap(data[i][key], dRange,key);
           })
           .attr("cx", function (d,i){ 
 
@@ -168,17 +193,35 @@
             points = projection([data[i].LON,data[i].LAT]);
             //console.log(points[1]);
             return points[1];
+          }).style("fill", function(d,i){
+            //console.log(d.name)
+            
+            var t = d[key];
+            var carr = ["#fed9a6","#b3cde3","#ccebc5","#decbe4","#fbb4ae"];
+
+            if(t<100){
+              c =0;
+            }else if( t< 500){
+              c =1;
+            }else if( t< 5000){
+              c =2;
+            }else if( t< 10000){
+              c =3;
+            }else{
+              c=4;
+            }
+            return carr[c];
           });
 
         circles.exit().remove();
 
     });
-
-  
+    return key;
+ } 
 
 
 function updateData(name){
- // var h = update(name,update);
-  //console.log(h);
+  var h = update(name,update);
+  console.log(h);
 }
 
