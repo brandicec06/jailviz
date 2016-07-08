@@ -68,10 +68,9 @@
 
   function rMap(num,bounds, key){
 
-    if(key == "NCONPOP" || key == "CONFPOP"){
+    if(key == "NCONPOP" || key == "UNCONV" || key == "BLACK"){
       var nBound = [0,20000];
       bounds = nBound;
-      console.log("this is pringing");
     }
 
     var dScale = d3.scaleLinear()
@@ -222,6 +221,5 @@ function update(key){
 
 function updateData(name){
   var h = update(name,update);
-  console.log(h);
 }
 
