@@ -5,6 +5,9 @@
   var extentsy;
   var r = 3;
 
+  cLeft = 150;
+  cTop = 50;
+
   var name = "CONFPOP";
 
   states = d3.select('#map').append('svg').append("svg").attr("id", "states")
@@ -37,8 +40,33 @@
 
   path = d3.geoPath().projection(projection)
 
-  //console.log(projection.invert([0,0]));
-  // console.log(projection.invert([width,height]));
+  // circle grid chart functionality
+
+
+  var gpts = [];
+  var gXp = 10;
+  var gYp = 10;
+
+  var gridScaleX = d3.scaleLinear()
+    .domain([0,10])
+    .range([cLeft,width-cLeft/2])
+
+  var gridScaleY = d3.scaleLinear()
+    .domain([0,10])
+    .range([cTop,height-cTop]);
+
+
+  function gridPoints(){
+      for(var i =0; i<10; i++){
+        var x = gridScaleX(i);
+        for(var j =0; j<10; j++){
+          var y = gridScaleY(j);
+            gpts.push({x,y});
+        }
+      }
+
+      return gpts;
+  }
 
   d3.json("./source/nstates.json", function(collection) { 
 
@@ -59,6 +87,8 @@
     });
 
   });
+
+
 
   function coordScale(pts){
     for(i in pts){
@@ -94,9 +124,13 @@
     return range;
     //return range[rMax,rMin];
   }
+  //adds div for tool tip 
+  var div = d3.select("body").append("div") 
+    .attr("class", "tooltip")       
+    .style("opacity", 0);
 
 
-function update(key){
+function update(key,chart){
   d3.csv("./source/survey.csv", function(error,data){
       if(error) throw error;
 
@@ -110,9 +144,8 @@ function update(key){
 
   coordScale(jails);
 
-
   var dRange = extents(data,key);
-  console.log(dRange);
+  //console.log(dRange);
 
   var over = function(){
     var circle = d3.select(this);
@@ -168,9 +201,23 @@ function update(key){
             }
             return carr[c];
           })
-          .style('opacity', .5)
+          .style("opacity",.5)
           .on("mouseover",over)
           .on("mouseout",out)
+
+          svg.selectAll("circle").on("mouseover",function(d) {   
+            div.transition()    
+                .duration(200)    
+                .style("opacity", .9)
+            div .html(d[key]+ "<br/>"  + d["CITY"])  
+                .style("left", (d3.event.pageX) + "px")   
+                .style("top", (d3.event.pageY - 28) + "px")
+            })
+          .on("mouseout", function(d) {   
+            div.transition()    
+                .duration(500)    
+                .style("opacity", 0); 
+           })
           .transition()
           .duration(2000);
 
@@ -210,16 +257,56 @@ function update(key){
               c=4;
             }
             return carr[c];
+          })
+          .style("opacity",function(){
+            if(chart ){
+              return 0;
+            }else {
+              return .5;
+            }
           });
+
+          console.log(chart);
+
+          var ppts =[];
+          var Gpoint = [];
+          if(chart == true){
+              states.selectAll("path").transition().duration(1000)
+                .style("stroke-opacity", "0");
+              ppts = gridPoints();
+
+              /*d3.selct("svg").selectAll("*").remove();
+
+              svg.selectAll("circle").data(gpts)//.transition().duration(1000)
+                .enter().append("circle")
+                .attr("cx", function (d,i){ 
+                  console.log(gpts[i])
+                  Gpoint = gpts[i];
+                  return Gpoint[0];
+                })
+                .attr("cx", function (d,i){ 
+                  Gpoint = gpts[i];
+                  return Gpoint[1];
+                })
+                .style("opacity", .5);*/
+
+          }else{
+              states.selectAll("path").transition().duration(1000)
+                .style("stroke-opacity", "0.4");
+          }
 
         circles.exit().remove();
 
+
+
     });
+    console.log(key);
     return key;
  } 
 
 
-function updateData(name){
-  var h = update(name,update);
+function updateData(name,bool){
+  update(name,bool);
+ // console.log(h);
 }
 
