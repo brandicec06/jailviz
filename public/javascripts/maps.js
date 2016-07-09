@@ -4,6 +4,8 @@
   var extentsx;
   var extentsy;
   var r = 3;
+  var rMin = 3;
+  var rMax = 30;
 
   var carr = ["#fed9a6","#b3cde3","#fccde5","#ccebc5","ffffcc","e5d8bd","#decbe4","#fbb4ae"];
   var dRange=[];
@@ -102,14 +104,17 @@
         bounds = nBound;
       }
 
-      var dScale = d3.scaleLinear()
+    var dScale = d3.scaleLinear()
       .domain(bounds)
-      .range([3, 50])
+      .range([rMin, rMax])
 
       var sNum = dScale(num);
 
       return sNum;
     }
+
+    rScale = d3.scaleLinear()
+      .domain()
 
 
     function extents(obj, k){
@@ -145,7 +150,6 @@
     }else{
       c=6;
     }
-    console.log(c+"__"+color+"__"+interval);
     return carr[c];
   }
 

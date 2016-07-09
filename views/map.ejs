@@ -155,10 +155,10 @@
   <script src="javascripts/maps.js"></script>
   <script type="text/javascript">
       var prop = "CONFPOP";
+      var b;
 
       function myFunc(){
         var n;
-        var b = false;
 
         var $btn = $(document.activeElement);
 
@@ -167,6 +167,9 @@
           prop = n;
         }else{
           n = prop;
+          b = true;
+
+          console.log("here");
         }
 
         if($btn[0].value == "Graph"){
@@ -177,6 +180,7 @@
           b = false;
           //console.log(b);
         }
+        //console.log(b);
         updateData(n,b);
       }
 
