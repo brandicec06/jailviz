@@ -8,6 +8,7 @@
     <title>The HTML5 Herald</title>
     <meta name="description" content="The HTML5 Herald">
     <meta name="author" content="SitePoint">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <script  src="https://code.jquery.com/jquery-3.0.0.min.js"   integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0="   crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.1.0/d3.min.js"></script>
     <script src="https://d3js.org/topojson.v1.min.js"></script>
@@ -19,7 +20,7 @@
         margin: 0;
         z-index: 1;
         padding: 0;
-        background-color: black;
+        background-color: #000000;
          /*  top: 0;
           left: 0;
           width: 100%;
@@ -45,49 +46,53 @@
       }
 
       .button{
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        padding: 3px 3px;
+        background-color: none;
+        display: inline-block;
+        float:left;
       }
-      .one{
-        top: 40px;
-      }
-      .two{
-        top: 60px;
-      }
-      .three{
-        top: 80px;
-      }
-      .four{
-        top: 100px;
-      }
-      .five{
-        top: 120px;
-      }  
-      .six{
-        top: 140px;
-      }       
-      .seven{
-        top: 160px;
-      }   
-      .eight{
-        top: 180px;
-      }  
+  
 
       .input {
         position: absolute;
-        left: 20px;
+        z-index: 1;
+        top: 625px;
       }
 
       .chart{
-        
-        top: 300px;
+        left: 1000px;
       }  
 
       .tomap{
-        top: 320px;
+        left: 1075px;
       }  
+
+    div.b{
+      position: absolute;
+      top:620px;
+      left: 60px;
+      width: 900px;
+      height: 30px;
+      background-color: none;
+      font-size: 20px;
+
+    }
+
+
+    div.c{
+     position: absolute;
+      z-index: 1;
+      top:90px;
+      left: 980px;
+      height: 550px;
+      font: 10px sans-serif;
+      text-align: right;
+      padding: 3px;
+      margin: 1px;
+
+     /* border: solid 2px;
+      border-color: white; */
+
+    }
 
     div.tooltip { 
         position: absolute;     
@@ -98,11 +103,54 @@
         font: 10px sans-serif;    
         background: lightsteelblue; 
         border: 0px;    
-        border-radius: 8px;     
+        border-radius: 8px;    
         pointer-events: none;     
     }
 
-      </style>
+    span{
+
+      font-size: 14px;
+    }
+
+    .axis {
+      font: 10px sans-serif;
+    }
+
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+
+    .x.axis path {
+      display: none;
+    }
+
+.chart text {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: end;
+}
+
+.axis{
+      fill: white;
+    stroke: white;
+}
+.axis path,
+.axis line {
+    fill: none;
+    stroke: white;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+
+    font-family: sans-serif;
+    font-weight: 100;
+    font-size: 11px;
+}
+ </style>
     
 
 </head>
@@ -114,42 +162,45 @@
 
 
   <div id="map"></div>
-  <button class="button one" name="updateButton"
+<div class="b">
+  <button class="btn btn-primary btn-outline" name="updateButton"
           type="button"
           value="CONFPOP"
-          onclick="myFunc()">Population</button>
-    <button class="button two" name="b2"
+          onclick="myFunc()"><span>Population</span></button>
+    <button class="btn btn-primary btn-outline" name="b2"
           type="button"
           value="NONCITZ"
-          onclick="myFunc()">Non Population</button>
-    <button class="button three" name="b3"
+          onclick="myFunc()"><span>Non Population</span></button>
+    <button class="btn btn-primary btn-outline" name="b3"
           type="button"
           value="JUVM"
-          onclick="myFunc()">Juvenile Male</button>
-    <button class="button four" name="b4"
+          onclick="myFunc()"><span>Juvenile Male</span></button>
+    <button class="btn btn-primary btn-outline" name="b4"
           type="button"
           value="JUVF"
-          onclick="myFunc()">Juvenile Female</button>
-    <button class="button five" name="b5"
+          onclick="myFunc()"><span>Juvenile Female</span></button>
+    <button class="btn btn-primary btn-outline" name="b5"
           type="button"
           value="ADLTJUV"
-          onclick="myFunc()">Tried As Adult</button>
-    <button class="button six" name="b5"
+          onclick="myFunc()"><span>Tried As Adult</span></button>
+    <button class="btn btn-primary btn-outline" name="b5"
           type="button"
           value="UNCONV"
-          onclick="myFunc()">Unconvicted</button>
-    <button class="button seven" name="b5"
+          onclick="myFunc()"><span>Unconvicted</span></button>
+    <button class="btn btn-primary btn-outline" name="b5"
           type="button"
           value="BLACK"
-          onclick="myFunc()">Black</button>
-    <button class="button eight" name="b5"
+          onclick="myFunc()"><span>Black</span></button>
+    <button class="btn btn-primary btn-outline" name="b5"
           type="button"
           value="NCONPOP"
-          onclick="myFunc()">Non-Confined</button>
+          onclick="myFunc()"><span>Non-Confined</span></button>
+</div>
 
-    <input class="input chart" type="submit" data-inline="true" value="Graph"
+    <div class="c"></div>
+    <input class="input chart btn" type="submit" data-inline="true" value="Graph"
           onclick="myFunc()">
-    <input class="input tomap" type="submit" data-inline="true" value="Map"
+    <input class="input tomap btn" type="submit" data-inline="true" value="Map"
           onclick="myFunc()">
 
   <script src="javascripts/maps.js"></script>

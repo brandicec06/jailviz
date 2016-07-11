@@ -1,4 +1,7 @@
   var height, path, projection, states, svg, width, pl;
+  var gsvg;
+
+  var rsvg;
 
   var coord = [];
   var extentsx;
@@ -6,6 +9,15 @@
   var r = 3;
   var rMin = 3;
   var rMax = 30;
+
+  var sgw = 250;
+  var sgh = 550;
+
+  var sgwb = 15;
+  var sghb =50;
+
+
+  var stateMax;
 
   var carr = ["#fed9a6","#b3cde3","#fccde5","#ccebc5","ffffcc","e5d8bd","#decbe4","#fbb4ae"];
   var dRange=[];
@@ -34,9 +46,15 @@
   .attr("width", width)
   .attr("height", height);
 
+  rsvg = d3.select(".c")
+  .append("svg")
+  .attr("width", sgw)
+  .attr("height",sgh);
+
+
   projection = d3.geoAlbers()
-    .center([-10, 39])//-25
-    .scale(1400)
+    .center([-5, 37])//-25
+    .scale(1200)
     .translate([width / 3, height / 2]);
 
     extentsx = projection.invert([0,0]);
@@ -48,13 +66,26 @@
     var gXp = 10;
     var gYp = 10;
 
+    //Secondary Chart Scales
     var gridScaleX = d3.scaleLinear()
     .domain([0,10])
-    .range([cLeft,width-cLeft/2])
+    .range([cLeft,width-cLeft/2]);
 
     var gridScaleY = d3.scaleLinear()
     .domain([0,10])
     .range([cTop,height-cBot]);
+
+    //State Graph Scale
+    function stateScaleX (m,d){
+      var temp = d3.scaleLinear()
+      .domain([0,m])
+      .range([sgwb,sgw-sgwb]);
+      console.log(m+"____"+d+"____"+sgw+"___"+temp);
+      var dataMax = temp(d);
+
+
+      return dataMax;
+    };
 
 
     function gridPoints(){
@@ -104,7 +135,7 @@
         bounds = nBound;
       }
 
-    var dScale = d3.scaleLinear()
+      var dScale = d3.scaleLinear()
       .domain(bounds)
       .range([rMin, rMax])
 
@@ -114,7 +145,7 @@
     }
 
     rScale = d3.scaleLinear()
-      .domain()
+    .domain()
 
 
     function extents(obj, k){
@@ -154,6 +185,11 @@
   }
 
 
+function stateDataX(){
+  /*var sdX = d3.scaleLinear().
+    domain([]).*/
+}
+
 
   function update(key,chart){
     d3.csv("./source/survey.csv", function(error,data){
@@ -169,6 +205,39 @@
 
       coordScale(jails);
 
+
+      //Get State totals for currently selected data title
+      var stateDataSet = _.countBy(data,"STATE");
+      for(v in stateDataSet){
+        stateDataSet[v] = 0;
+      }
+
+      var stateDataKeys = _.pluck(data, "STATE");
+      var statePopKeys = _.pluck(data, key);
+      var stateData = [];
+      for(var i =0; i<stateDataKeys.length;i++){
+        var s =stateDataKeys[i];
+        var n = statePopKeys[i];
+        var obj = {s,n};
+
+        stateData.push(obj);
+      }
+      for(var i =0; i<stateDataKeys.length; i++){
+        stateDataSet[stateData[i].s]+=(+stateData[i].n);
+      }
+
+      stateMax = _.max(stateDataSet);
+      //duplicate local function
+      var stateScale = d3.scaleLinear()
+      .domain([0,stateMax])
+      .range([sgwb,sgw-sgwb]);
+
+      var stateXAxis = d3.axisBottom(stateScale)
+      .ticks(4);
+
+      ////////////////////
+
+
       dRange = extents(data,key);
       interval = _.range(dRange[0],dRange[1], dRange[1]/carr.length);
   //console.log(dRange);
@@ -180,14 +249,56 @@
     circle.transition().duration(500)
     .attr("r", circle.attr("r") * 1 + 10 );
         //.style("opacity","0.2"); 
-      }
+  }
 
-      var out = function(){
-        var circle = d3.select(this);
-        circle.transition().duration(500)
-        .attr("r",pr)
-      }
+  var out = function(){
+    var circle = d3.select(this);
+    circle.transition().duration(500)
+    .attr("r",pr)
+  }
 
+
+//Create SVG rectangles for state graph element
+
+      var barPadding = 1;
+      var barHeight = 6;
+      
+      stateDataSorted = Object.keys(stateDataSet).sort(function(a,b){return stateDataSet[b]-stateDataSet[a]})
+
+      
+
+      var rects = rsvg.selectAll("rect").data(stateDataSorted);
+         
+         rects.enter()
+         .append("rect")
+         .attr("x", sgwb)
+         .attr("y", function(d, i) {
+            return i * ((sgh-sghb) / stateDataSorted.length);
+         })
+         .attr("width", 0)
+         .attr("height", barHeight)
+
+
+      rsvg.selectAll("rect").transition().duration(1000)
+         .attr("width", function(d,i){
+            return stateScaleX(stateMax,stateDataSet[stateDataSorted[i]]);
+         })
+        .attr("height", barHeight)
+        .style("fill","#EDC9AF")
+        .style("opacity", .5);
+
+        rects.exit().remove();
+
+        rsvg.append("g")
+         .attr("class","axis")
+         .attr("transform", "translate(0,500)")
+         .call(stateXAxis);
+
+        rsvg.selectAll(".axis").call(stateXAxis);
+
+
+
+/////
       var points;
       var pr;
       var circles = svg.selectAll("circle").data(data);
@@ -223,6 +334,7 @@
             //console.log(d.name)
             
             var t = d[name];
+            d["color"] = colorMap(t);
 
             if(t<100){
               c =0;
@@ -249,7 +361,7 @@
           .style("left", (d3.event.pageX + 30) +"px")   
           .style("top", (d3.event.pageY - 28) + "px")
           d3.selectAll("circle")
-          .style('opacity',function(r,i){
+          .style('opacity',function(r,j){
                // console.log(match + '__' + colorMap(r[key],true))
                if(d.color != r.color){
                 return .1;
@@ -327,10 +439,18 @@
             return .5;
           }
         });
-          circles.exit().remove();
-        });
-  return key;
+
+       circles.exit().remove();
+
+       
+
+  });
+ // return key;
+
+
+
 } 
+
 
 
 function updateData(name,bool){
