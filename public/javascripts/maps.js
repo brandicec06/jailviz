@@ -16,14 +16,16 @@
   var sgwb = 15;
   var sghb =50;
 /////Circle Chart variables
-  var leftBord = 100;
-  var rightBord = 950;
-  var botBord = 600;
-  var topBord = 50;
+var leftBord = 100;
+var rightBord = 950;
+var botBord = 600;
+var topBord = 50;
 
-  var stateMax;
+var dNum = 50;
 
-  var carr = ["#fed9a6","#b3cde3","#fccde5","#ccebc5","ffffcc","e5d8bd","#decbe4","#fbb4ae"];
+var stateMax;
+
+var carr = ["#fed9a6","#b3cde3","#fccde5","#ccebc5","ffffcc","e5d8bd","#decbe4","#fbb4ae"];
   //['#8dd3c7','#ffffb3','#bebada','#80b1d3','#b3de69','#fccde5','#d9d9d9','#bc80bd','#ccebc5','#ffed6f','#fb8072','#fdb462']
 
   var dRange=[];
@@ -67,7 +69,7 @@
 
 
 
-  projection = d3.geoAlbers()
+    projection = d3.geoAlbers()
     .center([-4, 37])//-25
     .scale(1200)
     .translate([width / 3, height / 2]);
@@ -83,7 +85,7 @@
 
     //Secondary Chart Scales
     var gridScaleX = d3.scaleLinear()
-    .domain([0,100])
+    .domain([0,dNum])
     .range([leftBord,rightBord]);
 
 
@@ -112,11 +114,11 @@
      states.selectAll("path").data(collection.features).enter().append("svg:path")
      .attr("d", path)
      .append("svg:title")
-     .text(function(d) {
+     /*.text(function(d) {
       return d.properties.name;
-    });
+    })*/;
 
-   });
+  });
 
 
 
@@ -135,7 +137,7 @@
       var y = gridScaleY(num);
 
       return y;
-  }
+    }
 
 
     function rMap(num,bounds, key,chart){
@@ -200,23 +202,23 @@
   }
 
 
-function stateDataX(){
+  function stateDataX(){
   /*var sdX = d3.scaleLinear().
-    domain([]).*/
+  domain([]).*/
 }
 
 
-  function update(key,chart){
-    d3.csv("./source/survey.csv", function(error,data){
-      if(error) throw error;
+function update(key,chart){
+  d3.csv("./source/survey.csv", function(error,data){
+    if(error) throw error;
 
-      for( p in data){
-        var jx = data[p].LON;
-        var jy = data[p].LAT;
+    for( p in data){
+      var jx = data[p].LON;
+      var jy = data[p].LAT;
 
-        jails.push({jx,jy});
-        
-      }
+      jails.push({jx,jy});
+
+    }
 
       //sorted object according to current key
       ldata = _.sortBy(data, key);
@@ -267,87 +269,87 @@ function stateDataX(){
     circle.transition().duration(500)
     .attr("r", circle.attr("r") * 1 + 10 );
         //.style("opacity","0.2"); 
-  }
+      }
 
-  var out = function(){
-    var circle = d3.select(this);
-    circle.transition().duration(500)
-    .attr("r",pr)
-  }
+      var out = function(){
+        var circle = d3.select(this);
+        circle.transition().duration(500)
+        .attr("r",pr)
+      }
 
 
 //Create SVG rectangles for state graph element
 
-      var barPadding = 1;
-      var barHeight = 6;
-      
-      stateDataSorted = Object.keys(stateDataSet).sort(function(a,b){return stateDataSet[b]-stateDataSet[a]})
+var barPadding = 1;
+var barHeight = 6;
 
-      
-
-      var rects = rsvg.selectAll("rect").data(stateDataSorted);
-         
-         rects.enter()
-         .append("rect")
-         .attr("x", sgwb)
-         .attr("y", function(d, i) {
-            return i * ((sgh-sghb) / stateDataSorted.length);
-         })
-         .attr("width", 0)
-         .attr("height", barHeight)
+stateDataSorted = Object.keys(stateDataSet).sort(function(a,b){return stateDataSet[b]-stateDataSet[a]})
 
 
-      rsvg.selectAll("rect").transition().duration(1000)
-         .attr("width", function(d,i){
-            return stateScaleX(stateMax,stateDataSet[stateDataSorted[i]]);
-         })
-        .attr("height", barHeight)
-        .style("fill","#EDC9AF")
-        .style("opacity", .5);
 
-        rects.exit().remove();
+var rects = rsvg.selectAll("rect").data(stateDataSorted);
 
-        rsvg.append("g")
-         .attr("class","axis")
-         .attr("transform", "translate(0,500)")
-         .call(stateXAxis);
+rects.enter()
+.append("rect")
+.attr("x", sgwb)
+.attr("y", function(d, i) {
+  return i * ((sgh-sghb) / stateDataSorted.length);
+})
+.attr("width", 0)
+.attr("height", barHeight)
 
-        rsvg.selectAll(".axis").call(stateXAxis);
+
+rsvg.selectAll("rect").transition().duration(1000)
+.attr("width", function(d,i){
+  return stateScaleX(stateMax,stateDataSet[stateDataSorted[i]]);
+})
+.attr("height", barHeight)
+.style("fill","#EDC9AF")
+.style("opacity", .5);
+
+rects.exit().remove();
+
+rsvg.append("g")
+.attr("class","axis")
+.attr("transform", "translate(0,500)")
+.call(stateXAxis);
+
+rsvg.selectAll(".axis").call(stateXAxis);
 
 
 
 /////
-      var points;
-      var pr;
-      var circles = svg.selectAll("circle").data(data);
-      var c;
+var points;
+var pr;
+var circles = svg.selectAll("circle").data(data);
+var c;
 
-      var ppts =[];
-      var Gpoint = [];
-      if(chart == true){
-        states.selectAll("path").transition().duration(1000)
-        .style("stroke-opacity", "0");
-      }else{
-        states.selectAll("path").transition().duration(1000)
-        .style("stroke-opacity", "0.4");
-      }
+var ppts =[];
+var Gpoint = [];
+if(chart == true){
+  states.selectAll("path").transition().duration(1000)
+  .style("stroke-opacity", "0");
+}else{
+  states.selectAll("path").transition().duration(1000)
+  .style("stroke-opacity", "0.4");
+}
 
-      circles.enter().append("circle")
-      .attr("r", 0)
-      .attr("cx", function (d,i){ 
+circles.enter().append("circle")
+.attr("r", 0)
+.attr("cx", function (d,i){ 
 
-        points = projection([data[i].LON,data[i].LAT]);
+  points = projection([data[i].LON,data[i].LAT]);
             //console.log(points[0]);
             
             return points[0];
           })
-      .attr("cy", function (d,i){ 
+          .attr("cy", function (d,i){ 
             //console.log(points[0)
             points = projection([data[i].LON,data[i].LAT]);
             //console.log(points[1]);
             return points[1];
           })
-      .style("fill", function(d,i){
+          .style("fill", function(d,i){
             //console.log(d.name)
             
             var t = d[name];
@@ -366,7 +368,7 @@ function stateDataX(){
             }
             return carr[c];
           })
-      .style("opacity",.5)
+        .style("opacity",.5)
          // .on("mouseover",over)
          .on("mouseout",out)
 
@@ -408,23 +410,23 @@ function stateDataX(){
                 return 4
               }else{
                return rMap(data[i][key], dRange,key);
-              }
-            })
+             }
+           })
          .attr("cx", function (d,i){ 
           var xc;
 
-//**** Circle Graph Code
-          if(chart){
+        //**** Circle Graph Code
+        if(chart){
 
-            if(i <100){
-              xc = gridScaleX(i);
-            }else{
-              xc = -100;
-            }
+          if(i <dNum){
+            xc = gridScaleX(i);
           }else{
-            points = projection([data[i].LON,data[i].LAT]);
-            xc = points[0];
+            xc = -dNum;
           }
+        }else{
+          points = projection([data[i].LON,data[i].LAT]);
+          xc = points[0];
+        }
             //console.log(points[0]);
 
             return xc;
@@ -433,11 +435,11 @@ function stateDataX(){
 
           if(chart){
             var yc;
-            if(i <100){
+            if(i <dNum){
               yc= rMap(data[i][key], dRange, key,chart);
                 //console.log(points);
               }else{
-                yc = -100;
+                yc = -dNum;
               }
             }else{
               points = projection([data[i].LON,data[i].LAT]);
@@ -452,7 +454,7 @@ function stateDataX(){
           })
           .style("opacity",function(d,i){
             if(chart ){
-              if(i<100){
+              if(i<dNum){
                return .5;
              }else{
               return 0;
@@ -462,18 +464,74 @@ function stateDataX(){
           }
         });
 
-        if(chart){
 
-        }
 
-       circles.exit().remove();
+          if(chart && key == "CONFPOP"){
+
+            var series = []
+            var keyS1 = "CONV";
+            var convP = _.pluck(data,keyS1);
+            var convPts = [];
+            for(var i =0; i<dNum; i++){
+              convPts.push({"x":gridScaleX(i),"y":rMap(convP[i], extents(data,key), keyS1,chart)});
+            }
+
+            var keyS2 = "UNCONV"
+            var unconvP = _.pluck(data,keyS2);
+            var unconvPts = [];
+            for(var i =0; i<dNum; i++){
+              //unconvPts.push({"x":gridScaleX(i),"y":rMap(data[i][key], dRange, key,chart)});
+              unconvPts.push({"x":gridScaleX(i),"y":rMap(unconvP[i], extents(data,key), keyS2,chart)});
+            }
+
+            series.push(convPts);
+            series.push(unconvPts);
+            //console.log(series);
+
+            var graphX = d3.scaleLinear()
+            .range([leftBord,rightBord]);
+
+            var graphY = d3.scaleLinear()
+            .range([botBord,topBord]);
+
+            //var f = d3.scaleOrdinal(d3.schemeCategory10);
+
+            //graphX.domain(d3.extent(d3.merge(series), function(d) { return d.x; }));
+            //graphY.domain(d3.extent(d3.merge(series), function(d) { return d.y; }));
+
+            var colours = ["red","green"];
+            svg.selectAll(".series")
+            .data(series)
+            .enter().append("g")
+            .attr("class", "series")
+            .style("fill", function(d, i) { return colours[i]; })
+            .selectAll(".point")
+            .data(function(d) { console.log(d);return d; })
+            .enter().append("circle")
+            .attr("class", "point")
+            .attr("r", 2.5)
+            .attr("cx", function(d) { return d.x; })
+            .attr("cy", function(d) { return d.y; })      
+
+            svg.selectAll(".series")
+            .style("fill", function(d, i) { return colours[i]; })
+            .selectAll(".point")
+            .data(function(d) { console.log(d);return d; })
+            .enter().append("circle")
+            .attr("class", "point")
+            .attr("r", 2.5)
+            .attr("cx", function(d) { return d.x; })
+            .attr("cy", function(d) { return d.y; });
+          }
+
+          circles.exit().remove();
 
 /*******Circle + Line Graph*****//////
 
 
-       
 
-  });
+
+});
  // return key;
 
 
