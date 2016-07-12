@@ -466,7 +466,7 @@ circles.enter().append("circle")
 
 
 
-          if(chart && key == "CONFPOP"){
+          /*if(chart && key == "CONFPOP"){
 
             var series = []
             var keyS1 = "CONV";
@@ -522,7 +522,17 @@ circles.enter().append("circle")
             .attr("r", 2.5)
             .attr("cx", function(d) { return d.x; })
             .attr("cy", function(d) { return d.y; });
-          }
+          }else{
+            svg.selectAll(".series")
+            .style("fill", function(d, i) { return 0 })
+            .selectAll(".point")
+            .data(function(d) { console.log(d);return d; })
+            .enter().append("circle")
+            .attr("class", "point")
+            .attr("r", 2.5)
+            .attr("cx", function(d) { return d.x; })
+            .attr("cy", function(d) { return d.y; });
+          }*/
 
           circles.exit().remove();
 
