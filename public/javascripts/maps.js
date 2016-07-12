@@ -15,11 +15,17 @@
 
   var sgwb = 15;
   var sghb =50;
-
+/////Circle Chart variables
+  var leftBord = 100;
+  var rightBord = 950;
+  var botBord = 600;
+  var topBord = 50;
 
   var stateMax;
 
   var carr = ["#fed9a6","#b3cde3","#fccde5","#ccebc5","ffffcc","e5d8bd","#decbe4","#fbb4ae"];
+  //['#8dd3c7','#ffffb3','#bebada','#80b1d3','#b3de69','#fccde5','#d9d9d9','#bc80bd','#ccebc5','#ffed6f','#fb8072','#fdb462']
+
   var dRange=[];
   var interval= [];
 
@@ -35,9 +41,11 @@
   .style("stroke-opacity", "0.4");
 
 
-
   width = parseInt(window.innerWidth);
   height = parseInt(window.innerHeight);
+
+  //lw = 900;
+  //lh = 550;
 
   jails = [];
   njails = [];
@@ -51,9 +59,15 @@
   .attr("width", sgw)
   .attr("height",sgh);
 
+  /*lsvg = d3.select('svg')
+    .append('svg')
+    .attr("width",lw)
+    .attr("height",lh)*/
+
+
 
   projection = d3.geoAlbers()
-    .center([-5, 37])//-25
+    .center([-4, 37])//-25
     .scale(1200)
     .translate([width / 3, height / 2]);
 
@@ -68,37 +82,20 @@
 
     //Secondary Chart Scales
     var gridScaleX = d3.scaleLinear()
-    .domain([0,10])
-    .range([cLeft,width-cLeft/2]);
+    .domain([0,100])
+    .range([leftBord,rightBord]);
 
-    var gridScaleY = d3.scaleLinear()
-    .domain([0,10])
-    .range([cTop,height-cBot]);
 
     //State Graph Scale
     function stateScaleX (m,d){
       var temp = d3.scaleLinear()
       .domain([0,m])
       .range([sgwb,sgw-sgwb]);
-      console.log(m+"____"+d+"____"+sgw+"___"+temp);
       var dataMax = temp(d);
-
 
       return dataMax;
     };
 
-
-    function gridPoints(){
-      for(var i =0; i<10; i++){
-        var x = gridScaleX(i);
-        for(var j =0; j<10; j++){
-          var y = gridScaleY(j);
-          gpts.push({x,y});
-        }
-      }
-
-      return gpts;
-    }
 
     d3.json("./source/nstates.json", function(collection) { 
 
@@ -128,7 +125,20 @@
       } 
     }
 
-    function rMap(num,bounds, key){
+    function yMap(num,bounds){
+
+      var gridScaleY = d3.scaleLinear()
+      .domain(bounds)
+      .range([botBord,topBord]);
+
+      var y = gridScaleY(num);
+
+      return y;
+  }
+
+
+    function rMap(num,bounds, key,chart){
+      var sNum;
 
       if(key == "NCONPOP" || key == "UNCONV" || key == "BLACK"){
         var nBound = [0,20000];
@@ -139,7 +149,11 @@
       .domain(bounds)
       .range([rMin, rMax])
 
-      var sNum = dScale(num);
+      if(chart){
+        sNum = yMap(num,bounds);
+      }else{
+        sNum = dScale(num);
+      }
 
       return sNum;
     }
@@ -202,6 +216,9 @@ function stateDataX(){
         jails.push({jx,jy});
         
       }
+
+      //sorted object according to current key
+      ldata = _.sortBy(data, key);
 
       coordScale(jails);
 
@@ -309,7 +326,6 @@ function stateDataX(){
       if(chart == true){
         states.selectAll("path").transition().duration(1000)
         .style("stroke-opacity", "0");
-        gridPoints();
       }else{
         states.selectAll("path").transition().duration(1000)
         .style("stroke-opacity", "0.4");
@@ -387,14 +403,21 @@ function stateDataX(){
          .attr("r", function(d,i){
 
               //console.log(rMap(data[i][key], dRange));
-              return rMap(data[i][key], dRange,key);
+              if(chart){
+                return 4
+              }else{
+               return rMap(data[i][key], dRange,key);
+              }
             })
          .attr("cx", function (d,i){ 
           var xc;
+
+//**** Circle Graph Code
           if(chart){
+
             if(i <100){
-              points = [gpts[i]["x"],gpts[i]["y"]];
-              xc = points[0]
+              xc = gridScaleX(i);
+              console.log(xc);
             }else{
               xc = -100;
             }
@@ -411,8 +434,7 @@ function stateDataX(){
           if(chart){
             var yc;
             if(i <100){
-              points = [gpts[i]["x"],gpts[i]["y"]];
-              yc = points[1]
+              yc= rMap(data[i][key], dRange, key,chart);
                 //console.log(points);
               }else{
                 yc = -100;
@@ -441,6 +463,9 @@ function stateDataX(){
         });
 
        circles.exit().remove();
+
+/*******Circle + Line Graph*****//////
+
 
        
 
