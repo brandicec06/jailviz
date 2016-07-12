@@ -52,7 +52,8 @@
 
   svg = d3.select('svg')
   .attr("width", width)
-  .attr("height", height);
+  .attr("height", height)
+  .append("g");
 
   rsvg = d3.select(".c")
   .append("svg")
@@ -373,7 +374,7 @@ function stateDataX(){
           div.transition()    
           .duration(200)    
           .style("opacity", .9)
-          div .html(d[key]+ "<br/>"  + d["CITY"])  
+          div .html(d[key]+ "<br/>"  + d["FACILITY"])  
           .style("left", (d3.event.pageX + 30) +"px")   
           .style("top", (d3.event.pageY - 28) + "px")
           d3.selectAll("circle")
@@ -417,7 +418,6 @@ function stateDataX(){
 
             if(i <100){
               xc = gridScaleX(i);
-              console.log(xc);
             }else{
               xc = -100;
             }
@@ -461,6 +461,10 @@ function stateDataX(){
             return .5;
           }
         });
+
+        if(chart){
+
+        }
 
        circles.exit().remove();
 
