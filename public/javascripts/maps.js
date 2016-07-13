@@ -256,7 +256,7 @@ function update(key,chart){
 
       var jailY = d3.scaleLinear()
         .domain(dRange)
-        .range([botBord,topBord])
+        .range([botBord,topBord]);
 
       var jailsYAxis = d3.axisLeft(jailY)
       .ticks(20)
@@ -269,9 +269,10 @@ function update(key,chart){
         .range([leftBord,rightBord])
 
       var jailsXAxis = d3.axisBottom(jailX)
-      .ticks(10)
+      .ticks(0)
 
-      if(chart){
+    if(chart){
+        d3.selectAll('g.tick').remove().exit();
       svg.append("g")
       .attr("class", "axis")
       .attr("transform", "translate(" + leftBord+ ",0)")
@@ -282,16 +283,33 @@ function update(key,chart){
       .filter(function(d){ return d} )
       .select("line")
       .style("stroke","#736F6E")
-      .style("opacity", .5);
+      .style("opacity", .4);
+
+
 
       svg.selectAll(".axis")
+      .style("stroke", "#736F6E")
       .call(jailsYAxis);
 
       svg.append("g")
       .attr("class", "axisx")
-      .style("stroke","#736F6E")
+      .style("stroke","none")
       .attr("transform", "translate(0," + botBord+ ")")
       .call(jailsXAxis);
+
+    }else{
+      svg.selectAll(".axis")
+      .style("stroke", "none");
+
+
+      d3.selectAll('g.tick')
+      .filter(function(d){ return d} )
+      .style("opacity", 0);
+
+      svg.selectAll(".axisx")
+      .style("stroke", "none")
+      .style("opacity",0);
+
     }
 
 
