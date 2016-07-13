@@ -11,7 +11,7 @@
   var rMax = 30;
 
   var sgw = 250;
-  var sgh = 550;
+  var sgh = 600;
 
   var sgwb = 15;
   var sghb =50;
@@ -21,7 +21,8 @@ var rightBord = 950;
 var botBord = 600;
 var topBord = 50;
 
-var dNum = 50;
+var gshift =50;
+var dNum = 100;
 
 var stateMax;
 
@@ -54,20 +55,15 @@ var carr = ["#fed9a6","#b3cde3","#fccde5","#ccebc5","ffffcc","e5d8bd","#decbe4",
 
   svg = d3.select('svg')
   .attr("width", width)
-  .attr("height", height)
-  .append("g");
+  .attr("height", height);
+ 
+  svg.append("g")
+    .attr("transform", "translate(0,0)");
 
   rsvg = d3.select(".c")
   .append("svg")
   .attr("width", sgw)
   .attr("height",sgh);
-
-  /*lsvg = d3.select('svg')
-    .append('svg')
-    .attr("width",lw)
-    .attr("height",lh)*/
-
-
 
     projection = d3.geoAlbers()
     .center([-4, 37])//-25
@@ -263,22 +259,40 @@ function update(key,chart){
         .range([botBord,topBord])
 
       var jailsYAxis = d3.axisLeft(jailY)
-      .ticks(4);
+      .ticks(20)
+      .tickSizeInner(-rightBord+leftBord,0,0)
+      .tickPadding([10]);
 
-      /* Graph Axis information
+      /* Graph Axis information*/
       var jailX = d3.scaleLinear()
-        .domain([0,1])
+        .domain([0,10])
         .range([leftBord,rightBord])
 
-      var jailsXAxis = d3.axisLeft(jailX)
-      .ticks(0);
+      var jailsXAxis = d3.axisBottom(jailX)
+      .ticks(10)
 
-     svg.attr("class","axis")
-    .attr("transform", "translate(50,0)")
-    .style("stroke","#736F6E")
-    .style("fill","none")
-    .call(jailsYAxis); */
+      if(chart){
+      svg.append("g")
+      .attr("class", "axis")
+      .attr("transform", "translate(" + leftBord+ ",0)")
+      .style("stroke", "#736F6E")
+      .call(jailsYAxis);
 
+      d3.selectAll('g.tick')
+      .filter(function(d){ return d} )
+      .select("line")
+      .style("stroke","#736F6E")
+      .style("opacity", .5);
+
+      svg.selectAll(".axis")
+      .call(jailsYAxis);
+
+      svg.append("g")
+      .attr("class", "axisx")
+      .style("stroke","#736F6E")
+      .attr("transform", "translate(0," + botBord+ ")")
+      .call(jailsXAxis);
+    }
 
 
   var over = function(){
@@ -329,11 +343,11 @@ function update(key,chart){
     rects.exit().remove();
 
     rsvg.append("g")
-    .attr("class","axis")
-    .attr("transform", "translate(0,500)")
+    .attr("class","axisS")
+    .attr("transform", "translate(0,"+ (botBord-55)+" )")
     .call(stateXAxis);
 
-    rsvg.selectAll(".axis").call(stateXAxis);
+    rsvg.selectAll(".axisS").call(stateXAxis);
 
 
     /////
@@ -438,7 +452,7 @@ function update(key,chart){
         if(chart){
 
           if(i <dNum){
-            xc = gridScaleX(i);
+            xc = gridScaleX(i)/*-gshift*/;
           }else{
             xc = -dNum;
           }
@@ -482,7 +496,8 @@ function update(key,chart){
           }else {
             return .5;
           }
-        }).style("stroke","none");
+        }).style("stroke","none")
+          .style("z-index", 1);
 
         circles.exit().remove();
 
