@@ -71,7 +71,7 @@ var carr = ["#fed9a6","#b3cde3","#fccde5","#ccebc5","ffffcc","e5d8bd","#decbe4",
 
     projection = d3.geoAlbers()
     .center([-4, 37])//-25
-    .scale(1200)
+    .scale(1150)
     .translate([width / 3, height / 2]);
 
     extentsx = projection.invert([0,0]);
@@ -202,11 +202,6 @@ var carr = ["#fed9a6","#b3cde3","#fccde5","#ccebc5","ffffcc","e5d8bd","#decbe4",
   }
 
 
-  function stateDataX(){
-  /*var sdX = d3.scaleLinear().
-  domain([]).*/
-}
-
 
 function update(key,chart){
   d3.csv("./source/survey.csv", function(error,data){
@@ -255,12 +250,36 @@ function update(key,chart){
       var stateXAxis = d3.axisBottom(stateScale)
       .ticks(4);
 
+
       ////////////////////
 
 
       dRange = extents(data,key);
       interval = _.range(dRange[0],dRange[1], dRange[1]/carr.length);
   //console.log(dRange);
+
+      var jailY = d3.scaleLinear()
+        .domain(dRange)
+        .range([botBord,topBord])
+
+      var jailsYAxis = d3.axisLeft(jailY)
+      .ticks(4);
+
+      /* Graph Axis information
+      var jailX = d3.scaleLinear()
+        .domain([0,1])
+        .range([leftBord,rightBord])
+
+      var jailsXAxis = d3.axisLeft(jailX)
+      .ticks(0);
+
+     svg.attr("class","axis")
+    .attr("transform", "translate(50,0)")
+    .style("stroke","#736F6E")
+    .style("fill","none")
+    .call(jailsYAxis); */
+
+
 
   var over = function(){
     var circle = d3.select(this);
@@ -280,67 +299,66 @@ function update(key,chart){
 
 //Create SVG rectangles for state graph element
 
-var barPadding = 1;
-var barHeight = 6;
+    var barPadding = 1;
+    var barHeight = 6;
 
-stateDataSorted = Object.keys(stateDataSet).sort(function(a,b){return stateDataSet[b]-stateDataSet[a]})
-
-
-
-var rects = rsvg.selectAll("rect").data(stateDataSorted);
-
-rects.enter()
-.append("rect")
-.attr("x", sgwb)
-.attr("y", function(d, i) {
-  return i * ((sgh-sghb) / stateDataSorted.length);
-})
-.attr("width", 0)
-.attr("height", barHeight)
-
-
-rsvg.selectAll("rect").transition().duration(1000)
-.attr("width", function(d,i){
-  return stateScaleX(stateMax,stateDataSet[stateDataSorted[i]]);
-})
-.attr("height", barHeight)
-.style("fill","#EDC9AF")
-.style("opacity", .5);
-
-rects.exit().remove();
-
-rsvg.append("g")
-.attr("class","axis")
-.attr("transform", "translate(0,500)")
-.call(stateXAxis);
-
-rsvg.selectAll(".axis").call(stateXAxis);
+    stateDataSorted = Object.keys(stateDataSet).sort(function(a,b){return stateDataSet[b]-stateDataSet[a]})
 
 
 
-/////
-var points;
-var pr;
-var circles = svg.selectAll("circle").data(data);
-var c;
+    var rects = rsvg.selectAll("rect").data(stateDataSorted);
 
-var ppts =[];
-var Gpoint = [];
-if(chart == true){
-  states.selectAll("path").transition().duration(1000)
-  .style("stroke-opacity", "0");
-}else{
-  states.selectAll("path").transition().duration(1000)
-  .style("stroke-opacity", "0.4");
-}
+    rects.enter()
+    .append("rect")
+    .attr("x", sgwb)
+    .attr("y", function(d, i) {
+      return i * ((sgh-sghb) / stateDataSorted.length);
+    })
+    .attr("width", 0)
+    .attr("height", barHeight)
 
-circles.enter().append("circle")
-.attr("r", 0)
-.attr("cx", function (d,i){ 
 
-  points = projection([data[i].LON,data[i].LAT]);
-            //console.log(points[0]);
-            
+    rsvg.selectAll("rect").transition().duration(1000)
+    .attr("width", function(d,i){
+      return stateScaleX(stateMax,stateDataSet[stateDataSorted[i]]);
+    })
+    .attr("height", barHeight)
+    .style("fill","#EDC9AF")
+    .style("opacity", .5);
+
+    rects.exit().remove();
+
+    rsvg.append("g")
+    .attr("class","axis")
+    .attr("transform", "translate(0,500)")
+    .call(stateXAxis);
+
+    rsvg.selectAll(".axis").call(stateXAxis);
+
+
+    /////
+    var points;
+    var pr;
+    var circles = svg.selectAll("circle").data(data);
+    var c;
+
+    var ppts =[];
+    var Gpoint = [];
+          if(chart == true){
+            states.selectAll("path").transition().duration(1000)
+            .style("stroke-opacity", "0");
+          }else{
+            states.selectAll("path").transition().duration(1000)
+            .style("stroke-opacity", "0.4");
+          }
+
+          circles.enter().append("circle")
+          .attr("r", 0)
+          .attr("cx", function (d,i){ 
+
+            points = projection([data[i].LON,data[i].LAT]);
+                      //console.log(points[0]);
+                      
             return points[0];
           })
           .attr("cy", function (d,i){ 
@@ -370,7 +388,8 @@ circles.enter().append("circle")
           })
         .style("opacity",.5)
          // .on("mouseover",over)
-         .on("mouseout",out)
+         .on("mouseout",out);
+
 
          svg.selectAll("circle").on("mouseover",function(d,i) {   
           div.transition()    
@@ -436,6 +455,7 @@ circles.enter().append("circle")
           if(chart){
             var yc;
             if(i <dNum){
+
               yc= rMap(data[i][key], dRange, key,chart);
                 //console.log(points);
               }else{
@@ -462,12 +482,26 @@ circles.enter().append("circle")
           }else {
             return .5;
           }
-        });
+        }).style("stroke","none");
+
+        circles.exit().remove();
 
 
 
-          /*if(chart && key == "CONFPOP"){
+            //   stroke:#736F6E;
+            
 
+          
+           
+
+          /*}else{
+            svg.select("axis")
+              .stylye("opacity",0);
+          }*/
+
+
+
+/*
             var series = []
             var keyS1 = "CONV";
             var convP = _.pluck(data,keyS1);
@@ -494,10 +528,10 @@ circles.enter().append("circle")
             var graphY = d3.scaleLinear()
             .range([botBord,topBord]);
 
-            //var f = d3.scaleOrdinal(d3.schemeCategory10);
+            var f = d3.scaleOrdinal(d3.schemeCategory10);
 
-            //graphX.domain(d3.extent(d3.merge(series), function(d) { return d.x; }));
-            //graphY.domain(d3.extent(d3.merge(series), function(d) { return d.y; }));
+            graphX.domain(d3.extent(d3.merge(series), function(d) { return d.x; }));
+            graphY.domain(d3.extent(d3.merge(series), function(d) { return d.y; }));
 
             var colours = ["red","green"];
             svg.selectAll(".series")
@@ -511,7 +545,9 @@ circles.enter().append("circle")
             .attr("class", "point")
             .attr("r", 2.5)
             .attr("cx", function(d) { return d.x; })
-            .attr("cy", function(d) { return d.y; })      
+            .attr("cy", function(d) { return d.y; })  
+          if(chart){
+    
 
             svg.selectAll(".series")
             .style("fill", function(d, i) { return colours[i]; })
@@ -532,14 +568,10 @@ circles.enter().append("circle")
             .attr("r", 2.5)
             .attr("cx", function(d) { return d.x; })
             .attr("cy", function(d) { return d.y; });
-          }*/
-
-          circles.exit().remove();
+          }
+*/
 
 /*******Circle + Line Graph*****//////
-
-
-
 
 });
  // return key;
