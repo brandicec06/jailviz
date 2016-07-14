@@ -10,9 +10,9 @@
   var rMin = 3;
   var rMax = 30;
 
-  var sgy = 50;
+  var sgy = 100;
   var sgw = 250;
-  var sgh = 650;
+  var sgh = 600;
 
   var sgwb = 5;
   var sghb =50;
@@ -396,7 +396,7 @@ function update(key,chart){
 
     rsvg.append("g")
     .attr("class","axisS")
-    .attr("transform", "translate(0,"+ (botBord-55)+" )")
+    .attr("transform", "translate(0,"+ (botBord-sgy)+" )")
     .call(stateXAxis);
 
     rsvg.selectAll(".axisS").call(stateXAxis);
@@ -407,13 +407,13 @@ function update(key,chart){
     .attr("transform", "translate(0,3)")
     .call(stateYAxis);
 
-      d3.select(".axisSy").selectAll('g.tick')
+      d3.selectAll('g.tick')
       .filter(function(d){ return d} )
       .select("line")
       .style("stroke","#736F6E")
-      .style("opacity", 1);
+      .style("opacity", .7);
 
-    rsvg.selectAll(".axisSy").call(stateYAxis);
+    rsvg.selectAll(".axisSy").style("stroke","#736F6E").call(stateYAxis);
 
 
     /////
