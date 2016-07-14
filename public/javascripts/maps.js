@@ -10,16 +10,19 @@
   var rMin = 3;
   var rMax = 30;
 
+  var sgy = 50;
   var sgw = 250;
-  var sgh = 600;
+  var sgh = 650;
 
-  var sgwb = 15;
+  var sgwb = 5;
   var sghb =50;
+  var stY = [];
+
 /////Circle Chart variables
 var leftBord = 100;
 var rightBord = 950;
-var botBord = 600;
-var topBord = 50;
+var botBord = 650;
+var topBord = 100;
 
 var gshift =50;
 var dNum = 100;
@@ -63,10 +66,11 @@ var carr = ["#fed9a6","#b3cde3","#fccde5","#ccebc5","ffffcc","e5d8bd","#decbe4",
   rsvg = d3.select(".c")
   .append("svg")
   .attr("width", sgw)
-  .attr("height",sgh);
+  .attr("height",sgh)
+  .style("overflow", "visible");
 
     projection = d3.geoAlbers()
-    .center([-4, 37])//-25
+    .center([-4, 38])//-25
     .scale(1150)
     .translate([width / 3, height / 2]);
 
@@ -95,6 +99,14 @@ var carr = ["#fed9a6","#b3cde3","#fccde5","#ccebc5","ffffcc","e5d8bd","#decbe4",
       return dataMax;
     };
 
+
+    for(var i =0; i<45; i++){
+      var t = d3.scaleLinear()
+        .domain([0,45])
+        .range([0,sgh-sghb])
+
+      stY.push(t(i));
+    }
 
     d3.json("./source/nstates.json", function(collection) { 
 
@@ -247,6 +259,8 @@ function update(key,chart){
       .ticks(4);
 
 
+
+
       ////////////////////
 
 
@@ -333,10 +347,20 @@ function update(key,chart){
 
     var barPadding = 1;
     var barHeight = 6;
+    var art = [0,30,40,70];
 
-    stateDataSorted = Object.keys(stateDataSet).sort(function(a,b){return stateDataSet[b]-stateDataSet[a]})
+    //State Data ordered by current selection, by values
+    //stateDataSorted = Object.keys(stateDataSet).sort(function(a,b){return stateDataSet[b]-stateDataSet[a]})
+    
+    //state Datta ordered by alphabetical order of states
+    stateDataSorted = Object.keys(stateDataSet).sort();
+    console.log(stateDataSorted);
+    var statesY = d3.scaleOrdinal()
+      .domain(stateDataSorted)
+      .range(stY);
 
-
+    var stateYAxis = d3.axisLeft(statesY)
+        .ticks(45);
 
     var rects = rsvg.selectAll("rect").data(stateDataSorted);
 
@@ -348,6 +372,16 @@ function update(key,chart){
     })
     .attr("width", 0)
     .attr("height", barHeight)
+    .on("mouseover",function(d,i) {   
+          div.transition()    
+          .duration(200)    
+          .style("opacity", .9)
+    
+          div.html( d+ "<br/>"  +stateDataSet[d] )  
+          .style("left", (d3.event.pageX + 30) +"px")   
+          .style("top", (d3.event.pageY - 28) + "px");
+          
+    });
 
 
     rsvg.selectAll("rect").transition().duration(1000)
@@ -366,6 +400,20 @@ function update(key,chart){
     .call(stateXAxis);
 
     rsvg.selectAll(".axisS").call(stateXAxis);
+
+    rsvg.append("g")
+    .attr("class","axisSy")
+    .style("stroke", "#736F6E")
+    .attr("transform", "translate(0,3)")
+    .call(stateYAxis);
+
+      d3.select(".axisSy").selectAll('g.tick')
+      .filter(function(d){ return d} )
+      .select("line")
+      .style("stroke","#736F6E")
+      .style("opacity", 1);
+
+    rsvg.selectAll(".axisSy").call(stateYAxis);
 
 
     /////
