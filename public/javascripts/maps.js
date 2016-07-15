@@ -44,7 +44,8 @@ var carr = ["#fed9a6","#b3cde3","#fccde5","#ccebc5","ffffcc","e5d8bd","#decbe4",
   states = d3.select('#map').append('svg').append("svg").attr("id", "states")
   .style("stroke","white")
   .style("stroke-width", ".5")
-  .style("stroke-opacity", "0.4");
+  .style("stroke-opacity", "0.4")
+  .style("fill","#191716");
 
 
   width = parseInt(window.innerWidth);
@@ -67,10 +68,11 @@ var carr = ["#fed9a6","#b3cde3","#fccde5","#ccebc5","ffffcc","e5d8bd","#decbe4",
   .append("svg")
   .attr("width", sgw)
   .attr("height",sgh)
-  .style("overflow", "visible");
+  .style("overflow", "visible")
+  .style("background-color","transparent");
 
     projection = d3.geoAlbers()
-    .center([-4, 38])//-25
+    .center([-3, 38.5])//-25
     .scale(1150)
     .translate([width / 3, height / 2]);
 
@@ -256,7 +258,11 @@ function update(key,chart){
       .range([sgwb,sgw-sgwb]);
 
       var stateXAxis = d3.axisBottom(stateScale)
-      .ticks(4);
+      .ticks(4)
+      .tickSizeInner(-(sgh-sghb),0,0)
+      .tickPadding(10);
+
+
 
 
 
@@ -345,6 +351,9 @@ function update(key,chart){
 
 //Create SVG rectangles for state graph element
 
+  d3.select(".statesTitle").transition().duration(1000)
+    .style("opacity",1);
+
     var barPadding = 1;
     var barHeight = 6;
     var art = [0,30,40,70];
@@ -399,7 +408,9 @@ function update(key,chart){
     .attr("transform", "translate(0,"+ (botBord-sgy)+" )")
     .call(stateXAxis);
 
-    rsvg.selectAll(".axisS").call(stateXAxis);
+    rsvg.selectAll(".axisS")
+    .style("stroke-width",.5)
+    .call(stateXAxis);
 
     rsvg.append("g")
     .attr("class","axisSy")
@@ -407,13 +418,23 @@ function update(key,chart){
     .attr("transform", "translate(0,3)")
     .call(stateYAxis);
 
+    d3.selectAll('g.tick')
+    .filter(function (d) { return d === 0;  })
+    .remove();
+
+
       d3.selectAll('g.tick')
       .filter(function(d){ return d} )
       .select("line")
-      .style("stroke","#736F6E")
-      .style("opacity", .7);
+      .style("stroke",function(d,i){
+        return "#736F6E";
+      })
+      .style("opacity", .5);
 
-    rsvg.selectAll(".axisSy").style("stroke","#736F6E").call(stateYAxis);
+    rsvg.selectAll(".axisSy")
+    .style("stroke","#736F6E")
+    .style("stroke-width",.75)
+    .call(stateYAxis);
 
 
     /////
@@ -567,6 +588,9 @@ function update(key,chart){
 
         circles.exit().remove();
 
+    d3.select("statesTitle")
+    .style("color","#999999")
+    .style("opacity", 1);
 
 
             //   stroke:#736F6E;

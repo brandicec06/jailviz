@@ -2,7 +2,6 @@
 <html>
   <head>
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
     <meta charset="utf-8">
 
     <title>The HTML5 Herald</title>
@@ -15,164 +14,11 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.7/d3-tip.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+
     <style>
-      html, body {
-        overflow-y:hidden;
-        margin: 0;
-        z-index: 1;
-        padding: 0;
-        background-color: #000000;
-         /*  top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          -webkit-box-shadow: 30px 30px 30px 30px rgba(0,0,0,.9) inset; 
-          -moz-box-shadow:    30px 30px 30px 30px rgba(0,0,0,.9) inset;  
-          box-shadow:         0px 0px 100px 200px rgba(0,0,0,.9) inset; 
-          */
-
-
-      }
-
-      svg {
-          
-          position: fixed;
-          background-color: #000000;
-
-      }
-
-      #map{
-        background: black;
-
-      }
-
-      .button{
-        background-color: none;
-        display: inline-block;
-        float:left;
-      }
-  
-
-      .input {
-        position: absolute;
-        z-index: 1;
-        top: 90%;/*625px;*/
-	  }
-
-      .chart{
-        left: 77%;
-      }  
-
-      .tomap{
-        left: 84%;
-      }  
-
-    div.b{
-      position: absolute;
-      top:90%;/*620px;*/
-      left: 60px;
-      width: 900px;
-      height: 30px;
-      background-color: none;
-      font-size: 20px;
-
-    }
-
-
-    div.c{
-     position: absolute;
-      z-index: 1;
-      top:100px;
-      left: 75%;/*980px*/
-      height: 550px;
-      font: 10px sans-serif;
-      text-align: right;
-      padding: 3px;
-      margin: 1px;
-
-     /* border: solid 2px;
-      border-color: white; */
-
-    }
-
-    div.tooltip { 
-        position: absolute;     
-        text-align: center;     
-        /*width: 70px;*/        
-        height: 28px;         
-        padding: 2px;       
-        font: 10px sans-serif;    
-        background: lightsteelblue; 
-        border: 0px;    
-        border-radius: 8px;    
-        pointer-events: none;     
-    }
-
-    span{
-
-      font-size: 14px;
-    }
-
-
-.chart text {
-  fill: white;
-  font: 10px sans-serif;
-  text-anchor: end;
-}
-
-
-.axisx{
-    z-index: 1
-    font: 10px sans-serif;
-    stroke: #736F6E;
-
-}
-.axisx path,
-.axisx line{
-  stroke: #A4A4A4;
-}
-
-
-.axis path,
-.axis line {
-    fill: none;
-    shape-rendering: crispEdges;
-}
-
-.axis text {
-    font-family: sans-serif;
-    font-weight: 100;
-    font-size: 9px;
-}
-
- .axisS{
-     fill: white;
-    stroke: white;
-}
-.axisS path,
-.axisS line {
-    fill: none;
-    stroke: white;
-    shape-rendering: crispEdges;
-}
-.axisS text {
-    font-family: sans-serif;
-    font-weight: 100;
-    font-size: 11px;
-}
-
-
-.axisSy path,
-.axisSy line {
-    fill: none;
-    shape-rendering: crispEdges;
-}
-.axisSy text {
-    font-family: sans-serif;
-    font-weight: 100;
-    font-size: 8px;
-}
-
+      
  </style>
     
 
@@ -184,7 +30,7 @@
   <p>Welcome to <%= title %></p>-->
 
 
-  <div id="map"></div>
+<div id="map"></div>
 <div class="b">
   <button class="btn btn-primary btn-outline" name="updateButton"
           type="button"
@@ -225,6 +71,15 @@
           onclick="myFunc()">
     <input class="input tomap btn" type="submit" data-inline="true" value="Map"
           onclick="myFunc()">
+
+          <div class="title titleT">
+            Who's in Jail ... And Where ?<br>
+            <span class = "subTitleT">A Survey of U.S. jails Visualizaiton</span>
+          </div>
+
+          <div class="statesTitle subTitleT">
+            Total by State
+          </div>
 
   <script src="javascripts/maps.js"></script>
   <script type="text/javascript">
