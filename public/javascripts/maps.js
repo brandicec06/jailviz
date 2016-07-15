@@ -405,7 +405,7 @@ function update(key,chart){
 
     rsvg.append("g")
     .attr("class","axisS")
-    .attr("transform", "translate(0,"+ (botBord-sgy)+" )")
+    .attr("transform", "translate(0,"+ (botBord-sgy-5)+" )")
     .call(stateXAxis);
 
     rsvg.selectAll(".axisS")
