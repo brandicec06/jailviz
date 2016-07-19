@@ -32,6 +32,11 @@ var stateMax;
 var carr = ["#fed9a6","#b3cde3","#fccde5","#ccebc5","ffffcc","e5d8bd","#decbe4","#fbb4ae"];
   //['#8dd3c7','#ffffb3','#bebada','#80b1d3','#b3de69','#fccde5','#d9d9d9','#bc80bd','#ccebc5','#ffed6f','#fb8072','#fdb462']
 
+///Legend Varibales
+var legendCircles = [100,106,112,118,124];
+
+///
+
   var dRange=[];
   var interval= [];
 
@@ -191,24 +196,17 @@ var carr = ["#fed9a6","#b3cde3","#fccde5","#ccebc5","ffffcc","e5d8bd","#decbe4",
   .attr("class", "tooltip")       
   .style("opacity", 0);
 
-  function colorMap(color){
+  function colorMap(color,dr){
 
-    if(color<interval[1]){
-      c =0;
-    }else if( color< interval[2]){
-      c =1;
-    }else if( color< interval[3]){
-      c =2;
-    }else if( color< interval[4]){
-      c =3;
-    }else if( color< interval[5]){
-      c =4;
-    }else if( color< interval[6]){
-      c =5;
-    }else{
-      c=6;
-    }
-    return carr[c];
+    var normalize = d3.scaleLinear()
+      .domain(dr)
+      .range([0,1]);
+
+      //console.log(normalize(color));
+
+    var cscale = d3.interpolateYlOrRd(normalize(color));
+
+    return cscale;
   }
 
 
@@ -262,16 +260,12 @@ function update(key,chart){
       .tickSizeInner(-(sgh-sghb),0,0)
       .tickPadding(10);
 
-
-
-
-
-
       ////////////////////
 
 
       dRange = extents(data,key);
-      interval = _.range(dRange[0],dRange[1], dRange[1]/carr.length);
+      //intervals of data to map colors to full range
+   //   interval = _.range(dRange[0],dRange[1], dRange[1]/carr.length);
   //console.log(dRange);
 
       var jailY = d3.scaleLinear()
@@ -363,13 +357,13 @@ function update(key,chart){
     
     //state Datta ordered by alphabetical order of states
     stateDataSorted = Object.keys(stateDataSet).sort();
-    console.log(stateDataSorted);
     var statesY = d3.scaleOrdinal()
       .domain(stateDataSorted)
       .range(stY);
 
     var stateYAxis = d3.axisLeft(statesY)
         .ticks(45);
+
 
     var rects = rsvg.selectAll("rect").data(stateDataSorted);
 
@@ -469,23 +463,10 @@ function update(key,chart){
             return points[1];
           })
           .style("fill", function(d,i){
-            //console.log(d.name)
-            
-            var t = d[name];
-            d["color"] = colorMap(t);
 
-            if(t<100){
-              c =0;
-            }else if( t< 500){
-              c =1;
-            }else if( t< 5000){
-              c =2;
-            }else if( t< 10000){
-              c =3;
-            }else{
-              c=4;
-            }
-            return carr[c];
+            var t = d[name];
+             return (colorMap(t,dRange));
+
           })
         .style("opacity",.5)
          // .on("mouseover",over)
@@ -569,9 +550,10 @@ function update(key,chart){
             return yc;
           }).style("fill", function(d,i){
             //console.log(d.name)
-            var t = d[key];
-            d["color"] = colorMap(t);
-            return colorMap(t);
+            console.log(name);
+            var t = d[name];
+             return (colorMap(t,dRange));
+
           })
           .style("opacity",function(d,i){
             if(chart ){
@@ -593,6 +575,31 @@ function update(key,chart){
     .style("opacity", 1);
 
 
+    var lsvg = d3.select(".l").append('svg')
+      .attr("width",300+"px")
+      .attr("height", 30+"px")
+      .attr("fill", "red");
+
+
+      var legend = lsvg.selectAll("circle")
+        .data(legendCircles)
+        .enter().append("circle")
+        .attr("r", 500)
+        .attr("cx",function(d,i){
+          return d[i];
+        })
+        .attr("cy", 600)
+        .attr("fill", function(d,i){
+
+          var f = d3.scaleLinear()
+            .domain([0,legendCircles.length])
+            .range([0,1])
+
+
+          var lc = d3.interpolateYlOrRd(f(i));
+
+          return "red";
+        }).attr("stroke", "4px");
             //   stroke:#736F6E;
             
 
