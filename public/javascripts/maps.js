@@ -33,7 +33,18 @@ var carr = ["#fed9a6","#b3cde3","#fccde5","#ccebc5","ffffcc","e5d8bd","#decbe4",
   //['#8dd3c7','#ffffb3','#bebada','#80b1d3','#b3de69','#fccde5','#d9d9d9','#bc80bd','#ccebc5','#ffed6f','#fb8072','#fdb462']
 
 ///Legend Varibales
-var legendCircles = [100,106,112,118,124];
+var legendCircles = [];
+
+  cl = 0;
+  for (var i =0; i<5; i++){
+    if(i ==0){
+      legendCircles.push(cl);
+    }else{
+      legendCircles.push(cl);
+    }
+    cl+=25;
+  }
+
 
 ///
 
@@ -209,6 +220,11 @@ var legendCircles = [100,106,112,118,124];
     return cscale;
   }
 
+
+var lsvg = d3.select(".l").append('svg')
+      .attr("width",300)
+      .attr("height", 30)
+      .style("overflow", "visible");
 
 
 function update(key,chart){
@@ -575,21 +591,19 @@ function update(key,chart){
     .style("opacity", 1);
 
 
-    var lsvg = d3.select(".l").append('svg')
-      .attr("width",300+"px")
-      .attr("height", 30+"px")
-      .attr("fill", "red");
 
 
-      var legend = lsvg.selectAll("circle")
-        .data(legendCircles)
-        .enter().append("circle")
-        .attr("r", 500)
+
+      var legend = lsvg.selectAll("circle").data(legendCircles);
+
+        legend.enter().append("circle")
+        .attr("r", 5)
         .attr("cx",function(d,i){
-          return d[i];
+
+          return d;
         })
-        .attr("cy", 600)
-        .attr("fill", function(d,i){
+        .attr("cy", 0)
+        .style("fill", function(d,i){
 
           var f = d3.scaleLinear()
             .domain([0,legendCircles.length])
@@ -598,8 +612,8 @@ function update(key,chart){
 
           var lc = d3.interpolateYlOrRd(f(i));
 
-          return "red";
-        }).attr("stroke", "4px");
+          return lc;
+        }).style("stroke", "4px");
             //   stroke:#736F6E;
             
 
