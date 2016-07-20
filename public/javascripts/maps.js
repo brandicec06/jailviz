@@ -7,8 +7,8 @@
   var extentsx;
   var extentsy;
   var r = 3;
-  var rMin = 3;
-  var rMax = 30;
+  var rMin = 2;
+  var rMax = 20;
 
   var sgy = 100;
   var sgw = 250;
@@ -35,16 +35,17 @@ var carr = ["#fed9a6","#b3cde3","#fccde5","#ccebc5","ffffcc","e5d8bd","#decbe4",
 ///Legend Varibales
 var legendCircles = [];
 
-  cl = 0;
+  cl = 10;
   for (var i =0; i<5; i++){
     if(i ==0){
       legendCircles.push(cl);
     }else{
       legendCircles.push(cl);
     }
-    cl+=25;
+    cl+=18;
   }
 
+  tShift = 3;
 
 ///
 
@@ -224,7 +225,8 @@ var legendCircles = [];
 var lsvg = d3.select(".l").append('svg')
       .attr("width",300)
       .attr("height", 30)
-      .style("overflow", "visible");
+      .style("overflow", "visible")
+      .style("background-color","transparent");
 
 
 function update(key,chart){
@@ -484,7 +486,7 @@ function update(key,chart){
              return (colorMap(t,dRange));
 
           })
-        .style("opacity",.5)
+        .style("opacity",.9)
          // .on("mouseover",over)
          .on("mouseout",out);
 
@@ -566,7 +568,7 @@ function update(key,chart){
             return yc;
           }).style("fill", function(d,i){
             //console.log(d.name)
-            console.log(name);
+            //console.log(name);
             var t = d[name];
              return (colorMap(t,dRange));
 
@@ -579,7 +581,7 @@ function update(key,chart){
               return 0;
             }
           }else {
-            return .5;
+            return .9;
           }
         }).style("stroke","none")
           .style("z-index", 1);
@@ -598,11 +600,11 @@ function update(key,chart){
 
         legend.enter().append("circle")
         .attr("r", 5)
-        .attr("cx",function(d,i){
+        .attr("cy",function(d,i){
 
           return d;
         })
-        .attr("cy", 0)
+        .attr("cx", 5)
         .style("fill", function(d,i){
 
           var f = d3.scaleLinear()
@@ -616,7 +618,62 @@ function update(key,chart){
         }).style("stroke", "4px");
             //   stroke:#736F6E;
             
+        if(!chart){
 
+        d3.select(".lp")
+          .style("opacity",1);
+
+        lsvg.style('opacity',1);
+
+
+        lsvg.selectAll('text').data(legendCircles)
+          .enter().append('text')
+          .attr("y", function(d,i){
+             
+            if(i ==0){
+              return (d+tShift)
+            }
+            if(i == legendCircles.length-1){
+
+              return (d+tShift);
+            }
+          })
+          .attr('x', 15)
+          .style('fon-size', "6px")
+          .text(function(d,i){
+             
+            if(i ==0){
+              return "- "+dRange[0];
+            }
+            if(i == legendCircles.length-1){
+
+              return "- "+dRange[1];
+            }
+          })
+          .style("fill","white")
+
+
+        lsvg.selectAll('text')
+          .text(function(d,i){
+             
+            if(i ==0){
+              return "- "+dRange[0];
+            }
+            if(i == legendCircles.length-1){
+
+              return "- "+dRange[1];
+            }
+          }).style('fon-size', "6px")
+
+
+          
+        }else{
+          lsvg.style('opacity',0);
+
+          d3.select(".lp")
+          .style("opacity",0);
+
+        }
           
            
 

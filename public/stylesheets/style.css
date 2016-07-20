@@ -341,4 +341,20 @@ html, body {
   stroke-wieght: 100;
 }
 
-
+      .l{
+        position: absolute;
+        font-size: 11px;
+        left: 80px;
+        top: 550px;
+        width: 300px;
+        height: 30px;
+        background-color: transparent;
+      }
+.lp{
+        position: absolute;
+        left: 80px;
+        top: 650px;
+        width: 300px;
+        height: 30px;
+        opacity: 0;
+      }
