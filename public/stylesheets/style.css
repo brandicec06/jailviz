@@ -283,9 +283,14 @@ html, body {
     text-anchor: end;
   }
 
+  .axis text {
+    font-family: sans-serif;
+    font-weight: 100;
+    font-size: 9px;
+  }
 
   .axisx{
-    z-index: 1
+
     font: 10px sans-serif;
     stroke: #736F6E;
 
@@ -300,13 +305,9 @@ html, body {
   .axis line {
     fill: none;
     shape-rendering: crispEdges;
+    stroke: none;
   }
 
-  .axis text {
-    font-family: sans-serif;
-    font-weight: 100;
-    font-size: 9px;
-  }
 
   .axisS{
    fill: white;

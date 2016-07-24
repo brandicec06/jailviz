@@ -29,7 +29,8 @@ var dNum = 100;
 
 var stateMax;
 
-var carr = ["#fed9a6","#b3cde3","#fccde5","#ccebc5","ffffcc","e5d8bd","#decbe4","#fbb4ae"];
+var carr = ["#ffffcc","#ffeda0","#fc4e2a","#e31a1c","#b10026"];
+//["#fed9a6","#b3cde3","#fccde5","#ccebc5","ffffcc","e5d8bd","#decbe4","#fbb4ae"];
   //['#8dd3c7','#ffffb3','#bebada','#80b1d3','#b3de69','#fccde5','#d9d9d9','#bc80bd','#ccebc5','#ffed6f','#fb8072','#fdb462']
 
 ///Legend Varibales
@@ -208,9 +209,9 @@ var legendCircles = [];
   .attr("class", "tooltip")       
   .style("opacity", 0);
 
-  function colorMap(color,dr){
+  function colorMap(color){//,dr){
 
-    var normalize = d3.scaleLinear()
+    /*var normalize = d3.scaleLinear()
       .domain(dr)
       .range([0,1]);
 
@@ -218,8 +219,21 @@ var legendCircles = [];
 
     var cscale = d3.interpolateYlOrRd(normalize(color));
 
-    return cscale;
-  }
+    return cscale;*/
+    var index = 0;
+      while(index<carr.length){
+        //console.log(interval+ "  " + color); 
+        if(color<=interval[index]){
+          c =index;
+          //console.log(c);
+        return carr[c];
+       }
+       if(color>interval[interval.length-1]){
+        return carr[interval.length-1];
+       }
+       index++;
+    }
+}
 
 
 var lsvg = d3.select(".l").append('svg')
@@ -283,7 +297,8 @@ function update(key,chart){
 
       dRange = extents(data,key);
       //intervals of data to map colors to full range
-   //   interval = _.range(dRange[0],dRange[1], dRange[1]/carr.length);
+      //console.log(dRange);
+      interval = _.range(dRange[0],dRange[1], dRange[1]/carr.length);
   //console.log(dRange);
 
       var jailY = d3.scaleLinear()
@@ -482,8 +497,12 @@ function update(key,chart){
           })
           .style("fill", function(d,i){
 
-            var t = d[name];
-             return (colorMap(t,dRange));
+             var t = d[name];
+             //console.log(interval)
+            d["color"] = colorMap(t);
+
+            return d.color;
+             //return (colorMap(t,dRange));
 
           })
         .style("opacity",.9)
@@ -567,11 +586,11 @@ function update(key,chart){
             }
             return yc;
           }).style("fill", function(d,i){
-            //console.log(d.name)
-            //console.log(name);
             var t = d[name];
-             return (colorMap(t,dRange));
+             //console.log(interval)
+            d["color"] = colorMap(t);
 
+            return d.color;
           })
           .style("opacity",function(d,i){
             if(chart ){
