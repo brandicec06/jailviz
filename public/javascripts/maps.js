@@ -46,7 +46,8 @@ var legendCircles = [];
     cl+=18;
   }
 
-  tShift = 3;
+  tShift2 = 10;
+  tShift1 = 10;
 
 ///
 
@@ -171,7 +172,7 @@ var legendCircles = [];
     function rMap(num,bounds, key,chart){
       var sNum;
 
-      if(key == "NCONPOP" || key == "UNCONV" || key == "BLACK"){
+      if(key == "NCONPOP" || key == "UNCONV" ){
         var nBound = [0,20000];
         bounds = nBound;
       }
@@ -547,6 +548,8 @@ function update(key,chart){
               if(chart){
                 return 4
               }else{
+         
+                console.log(rMap(data[i][key], dRange,key)+"   "+ data[i][key] +"  "+dRange);
                return rMap(data[i][key], dRange,key);
              }
            })
@@ -619,11 +622,10 @@ function update(key,chart){
 
         legend.enter().append("circle")
         .attr("r", 5)
-        .attr("cy",function(d,i){
-
+        .attr("cy", 50)
+        .attr("cx", function(d,i){
           return d;
         })
-        .attr("cx", 5)
         .style("fill", function(d,i){
 
           var f = d3.scaleLinear()
@@ -647,43 +649,28 @@ function update(key,chart){
 
         lsvg.selectAll('text').data(legendCircles)
           .enter().append('text')
-          .attr("y", function(d,i){
+          .attr("y", 70)
+          .attr('x', function(d,i){
              
             if(i ==0){
-              return (d+tShift)
+              return (d-tShift1)
             }
             if(i == legendCircles.length-1){
 
-              return (d+tShift);
+              return (d-tShift2);
             }
           })
-          .attr('x', 15)
-          .style('fon-size', "6px")
           .text(function(d,i){
              
             if(i ==0){
-              return "- "+dRange[0];
+              return "Min";
             }
             if(i == legendCircles.length-1){
 
-              return "- "+dRange[1];
+              return "Max";
             }
           })
           .style("fill","white")
-
-
-        lsvg.selectAll('text')
-          .text(function(d,i){
-             
-            if(i ==0){
-              return "- "+dRange[0];
-            }
-            if(i == legendCircles.length-1){
-
-              return "- "+dRange[1];
-            }
-          }).style('fon-size', "6px")
-
 
           
         }else{
