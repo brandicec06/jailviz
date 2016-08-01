@@ -49,6 +49,17 @@ var legendCircles = [];
   tShift2 = 10;
   tShift1 = 10;
 
+  var descriptions = {
+    CONFPOP:"How many persons under the supervision of your jail jurisdiction were confined in your jail facilities?",
+    NCONPOP:"how many persons under the supervision of your jail jurisdiction were under jail supervision but not confined?",
+    CONV: "Of all persons confined in your jail facilities on June 30, 2014, how many were convicted, total?",
+    UNCONV: "Of all persons confined in your jail facilities on June 30, 2014, how many were unconvicted, total?",
+    CORRSTAFF: "On June 30, 2014, how many staff employed by your jail jurisdiction were - Correctional officers?",
+    WHITE: "On June 30, 2014, how many persons confined in your jail facilities were - White, not of Hispanic origin?",
+    BLACK: "On June 30, 2014, how many persons confined in your jail facilities were - Black or African American, not of Hispanic origin?"
+  };
+
+
 ///
 
   var dRange=[];
@@ -345,6 +356,7 @@ function update(key,chart){
       .attr("transform", "translate(0," + botBord+ ")")
       .call(jailsXAxis);
 
+
     }else{
       svg.selectAll(".axis")
       .style("stroke", "none");
@@ -359,7 +371,6 @@ function update(key,chart){
       .style("opacity",0);
 
     }
-
 
   var over = function(){
     var circle = d3.select(this);
@@ -548,9 +559,7 @@ function update(key,chart){
               if(chart){
                 return 4
               }else{
-         
-                console.log(rMap(data[i][key], dRange,key)+"   "+ data[i][key] +"  "+dRange);
-               return rMap(data[i][key], dRange,key);
+                return rMap(data[i][key], dRange,key);
              }
            })
          .attr("cx", function (d,i){ 
@@ -603,7 +612,7 @@ function update(key,chart){
               return 0;
             }
           }else {
-            return .9;
+            return .7;
           }
         }).style("stroke","none")
           .style("z-index", 1);
@@ -680,13 +689,29 @@ function update(key,chart){
           .style("opacity",0);
 
         }
-          
-           
+        
+      d3.select(".des")
+        .style("opacity",1);
+        
+      d3.select(".des")
+        .enter().append('text')
+        .attr("x",0)
+        .attr("y",0)
+        .text(function(){   
+            return descriptions[key];
+        })
+        .style("opacity", 1)
+        .style("fill", "red");
 
-          /*}else{
-            svg.select("axis")
-              .stylye("opacity",0);
-          }*/
+
+      d3.select(".des")
+        .text(function(){  
+
+            return descriptions[key];
+        })
+        .style("opacity", 1)
+        .style("fill", "red");
+
 
 
 

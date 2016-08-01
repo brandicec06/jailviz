@@ -145,7 +145,7 @@ html, body {
   margin: 0;
   z-index: 1;
   padding: 0;
-  background-color: transparent;/*#191716;*/
+  background-color: #191716;
          /*  top: 0;
           left: 0;
           width: 100%;
@@ -163,7 +163,7 @@ html, body {
         svg {
 
           position: fixed;
-          background-color: #191716;
+          background-color: transparent;/*#191716;*/
         }
 
         #map{
@@ -246,7 +246,7 @@ html, body {
          position: absolute;
          z-index: 1;
          top:100px;
-         left: 75%;/*980px*/
+         left: 77%;/*980px*/
          height: 550px;
          font: 10px sans-serif;
          text-align: right;
@@ -342,20 +342,35 @@ html, body {
 
 }
 
-      .l{
-        position: absolute;
-        font-size: 11px;
-        left: 80px;
-        top: 550px;
-        width: 300px;
-        height: 30px;
-        background-color: transparent;
-      }
+.l{
+  position: absolute;
+  font-size: 11px;
+  left: 80px;
+  top: 550px;
+  width: 300px;
+  height: 30px;
+  background-color: transparent;
+}
+
 .lp{
-        position: absolute;
-        left: 80px;
-        top: 600px;
-        width: 300px;
-        height: 30px;
-        opacity: 0;
-      }
+  position: absolute;
+  left: 80px;
+  top: 600px;
+  width: 300px;
+  height: 30px;
+  opacity: 0;
+}
+
+.des{
+  position: absolute;
+  font-size: 11px;
+  left: 75px;
+  top: 94%;
+  width: 750px;
+  height: 30px;
+  font-size: 14px;
+  letter-spacing: 1px;
+  border-top: 1px solid #2b2e2f;
+  opacity: 0;
+  color: #736F6E;
+}
