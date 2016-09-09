@@ -1,0 +1,11 @@
+svg{
+	display: block;
+	margin: auto;
+	background-color: black;
+}
+.stats{
+	width: 50%;
+	margin: 0 auto;
+	text-align: center;
+	background-color: rgb(250,250,250);
+}

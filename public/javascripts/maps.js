@@ -1,7 +1,7 @@
   var height, path, projection, states, svg, width, pl;
   var gsvg;
-
   var rsvg;
+  var ssvg;
 
   var coord = [];
   var extentsx;
@@ -100,6 +100,8 @@ var legendCircles = [];
   .attr("height",sgh)
   .style("overflow", "visible")
   .style("background-color","transparent");
+
+
 
     projection = d3.geoAlbers()
     .center([-3, 38.5])//-25
@@ -529,6 +531,7 @@ function update(key,chart){
           div .html(d[key]+ "<br/>"  + d["FACILITY"])  
           .style("left", (d3.event.pageX + 30) +"px")   
           .style("top", (d3.event.pageY - 28) + "px")
+         
           d3.selectAll("circle")
           .style('opacity',function(r,j){
                // console.log(match + '__' + colorMap(r[key],true))

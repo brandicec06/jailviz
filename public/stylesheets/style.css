@@ -374,3 +374,8 @@ html, body {
   opacity: 0;
   color: #736F6E;
 }
+
+/**Stat Charts**/
+.stats{
+  display: inline-block;
+}
